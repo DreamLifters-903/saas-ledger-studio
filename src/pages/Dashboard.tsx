@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Bell, Clock, TrendingUp, ArrowUpRight, Wallet, CreditCard, Users, FileText } from "lucide-react";
+import { Bell, Clock, TrendingUp, ArrowUpRight, Wallet, CreditCard, Users, FileText, Inbox } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 
@@ -22,11 +22,9 @@ interface StatCardProps {
   icon: React.ElementType;
   label: string;
   value: string;
-  change?: string;
-  positive?: boolean;
 }
 
-function StatCard({ icon: Icon, label, value, change, positive = true }: StatCardProps) {
+function StatCard({ icon: Icon, label, value }: StatCardProps) {
   return (
     <motion.div
       variants={itemVariants}
@@ -37,78 +35,9 @@ function StatCard({ icon: Icon, label, value, change, positive = true }: StatCar
         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
           <Icon className="w-6 h-6 text-primary" />
         </div>
-        {change && (
-          <span
-            className={`text-sm font-medium ${positive ? "text-success" : "text-destructive"}`}
-          >
-            {change}
-          </span>
-        )}
       </div>
       <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
       <p className="text-sm text-muted-foreground">{label}</p>
-    </motion.div>
-  );
-}
-
-interface NotificationCardProps {
-  title: string;
-  message: string;
-  time: string;
-  type: "info" | "warning" | "success";
-}
-
-function NotificationCard({ title, message, time, type }: NotificationCardProps) {
-  const colors = {
-    info: "border-l-info",
-    warning: "border-l-warning",
-    success: "border-l-success",
-  };
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      className={`dashboard-card border-l-4 ${colors[type]}`}
-    >
-      <div className="flex items-start justify-between">
-        <div>
-          <h4 className="font-semibold text-foreground mb-1">{title}</h4>
-          <p className="text-sm text-muted-foreground">{message}</p>
-        </div>
-        <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">{time}</span>
-      </div>
-    </motion.div>
-  );
-}
-
-interface ReminderCardProps {
-  title: string;
-  dueDate: string;
-  priority: "high" | "medium" | "low";
-}
-
-function ReminderCard({ title, dueDate, priority }: ReminderCardProps) {
-  const priorityColors = {
-    high: "bg-destructive/20 text-destructive",
-    medium: "bg-warning/20 text-warning",
-    low: "bg-muted text-muted-foreground",
-  };
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      className="dashboard-card flex items-center justify-between"
-    >
-      <div className="flex items-center gap-3">
-        <Clock className="w-5 h-5 text-muted-foreground" />
-        <div>
-          <h4 className="font-medium text-foreground">{title}</h4>
-          <p className="text-xs text-muted-foreground">{dueDate}</p>
-        </div>
-      </div>
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[priority]}`}>
-        {priority}
-      </span>
     </motion.div>
   );
 }
@@ -136,6 +65,18 @@ function QuickAction({ icon: Icon, label, onClick }: QuickActionProps) {
   );
 }
 
+function EmptyState({ icon: Icon, title, message }: { icon: React.ElementType; title: string; message: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-8 text-center">
+      <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-3">
+        <Icon className="w-6 h-6 text-muted-foreground" />
+      </div>
+      <h4 className="font-medium text-foreground mb-1">{title}</h4>
+      <p className="text-sm text-muted-foreground">{message}</p>
+    </div>
+  );
+}
+
 const Dashboard = () => {
   return (
     <MainLayout>
@@ -149,7 +90,7 @@ const Dashboard = () => {
         <motion.div variants={itemVariants} className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              Welcome back, <span className="text-gradient-primary">John</span>
+              Welcome back
             </h1>
             <p className="text-muted-foreground">
               Here's what's happening with your accounts today.
@@ -170,28 +111,22 @@ const Dashboard = () => {
           <StatCard
             icon={Wallet}
             label="Total Revenue"
-            value="$284,590"
-            change="+12.5%"
-            positive
+            value="—"
           />
           <StatCard
             icon={CreditCard}
             label="Total Expenses"
-            value="$142,320"
-            change="+3.2%"
-            positive={false}
+            value="—"
           />
           <StatCard
             icon={Users}
             label="Active Employees"
-            value="24"
-            change="+2"
-            positive
+            value="0"
           />
           <StatCard
             icon={FileText}
             label="Pending Invoices"
-            value="18"
+            value="0"
           />
         </motion.div>
 
@@ -219,24 +154,11 @@ const Dashboard = () => {
               </h2>
               <Button variant="ghost" size="sm">View All</Button>
             </div>
-            <div className="space-y-3">
-              <NotificationCard
-                title="Payment Received"
-                message="Invoice #1234 has been paid - $2,450"
-                time="2 min ago"
-                type="success"
-              />
-              <NotificationCard
-                title="New Employee Added"
-                message="Sarah Johnson joined the accounting team"
-                time="1 hour ago"
-                type="info"
-              />
-              <NotificationCard
-                title="Expense Approval Needed"
-                message="Travel expense report requires your approval"
-                time="3 hours ago"
-                type="warning"
+            <div className="glow-card">
+              <EmptyState
+                icon={Inbox}
+                title="No notifications"
+                message="You're all caught up!"
               />
             </div>
           </motion.div>
@@ -250,21 +172,11 @@ const Dashboard = () => {
               </h2>
               <Button variant="ghost" size="sm">View All</Button>
             </div>
-            <div className="space-y-3">
-              <ReminderCard
-                title="Quarterly Tax Filing"
-                dueDate="Due in 3 days"
-                priority="high"
-              />
-              <ReminderCard
-                title="Payroll Processing"
-                dueDate="Due in 5 days"
-                priority="medium"
-              />
-              <ReminderCard
-                title="Annual Audit Preparation"
-                dueDate="Due in 2 weeks"
-                priority="low"
+            <div className="glow-card">
+              <EmptyState
+                icon={Clock}
+                title="No reminders"
+                message="No upcoming reminders scheduled"
               />
             </div>
           </motion.div>

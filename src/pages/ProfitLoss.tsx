@@ -20,14 +20,9 @@ const itemVariants = {
 };
 
 const ProfitLoss = () => {
-  const [revenue, setRevenue] = useState(285000);
-  const [expenses, setExpenses] = useState(142000);
-  const [taxRate, setTaxRate] = useState(25);
-
-  const grossProfit = revenue - expenses;
-  const taxAmount = (grossProfit * taxRate) / 100;
-  const netProfit = grossProfit - taxAmount;
-  const profitMargin = ((netProfit / revenue) * 100).toFixed(1);
+  const [revenue, setRevenue] = useState<string>("");
+  const [expenses, setExpenses] = useState<string>("");
+  const [taxRate, setTaxRate] = useState<string>("");
 
   return (
     <MainLayout>
@@ -61,7 +56,8 @@ const ProfitLoss = () => {
               <Input
                 type="number"
                 value={revenue}
-                onChange={(e) => setRevenue(Number(e.target.value))}
+                onChange={(e) => setRevenue(e.target.value)}
+                placeholder="0.00"
                 className="pl-9 bg-muted border-border text-lg font-semibold"
               />
             </div>
@@ -83,7 +79,8 @@ const ProfitLoss = () => {
               <Input
                 type="number"
                 value={expenses}
-                onChange={(e) => setExpenses(Number(e.target.value))}
+                onChange={(e) => setExpenses(e.target.value)}
+                placeholder="0.00"
                 className="pl-9 bg-muted border-border text-lg font-semibold"
               />
             </div>
@@ -104,7 +101,8 @@ const ProfitLoss = () => {
               <Input
                 type="number"
                 value={taxRate}
-                onChange={(e) => setTaxRate(Number(e.target.value))}
+                onChange={(e) => setTaxRate(e.target.value)}
+                placeholder="0"
                 className="pr-9 bg-muted border-border text-lg font-semibold"
                 min={0}
                 max={100}
@@ -132,12 +130,8 @@ const ProfitLoss = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
             <div className="relative">
               <p className="text-sm text-muted-foreground mb-2">Gross Profit</p>
-              <p className="text-3xl font-bold text-foreground mb-1">
-                ${grossProfit.toLocaleString()}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Revenue - Expenses
-              </p>
+              <p className="text-3xl font-bold text-foreground mb-1">—</p>
+              <p className="text-sm text-muted-foreground">Revenue - Expenses</p>
             </div>
           </motion.div>
 
@@ -149,12 +143,8 @@ const ProfitLoss = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-warning/5 via-transparent to-warning/5" />
             <div className="relative">
               <p className="text-sm text-muted-foreground mb-2">Tax Amount</p>
-              <p className="text-3xl font-bold text-warning mb-1">
-                ${taxAmount.toLocaleString()}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {taxRate}% of Gross Profit
-              </p>
+              <p className="text-3xl font-bold text-warning mb-1">—</p>
+              <p className="text-sm text-muted-foreground">Based on tax rate</p>
             </div>
           </motion.div>
 
@@ -166,16 +156,8 @@ const ProfitLoss = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-success/10 via-transparent to-success/5" />
             <div className="relative">
               <p className="text-sm text-muted-foreground mb-2">Net Profit</p>
-              <p
-                className={`text-3xl font-bold mb-1 ${
-                  netProfit >= 0 ? "text-success" : "text-destructive"
-                }`}
-              >
-                ${netProfit.toLocaleString()}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Gross Profit - Tax
-              </p>
+              <p className="text-3xl font-bold text-foreground mb-1">—</p>
+              <p className="text-sm text-muted-foreground">Gross Profit - Tax</p>
             </div>
           </motion.div>
         </motion.div>
@@ -185,26 +167,13 @@ const ProfitLoss = () => {
           <div className="glow-card p-6 max-w-md mx-auto text-center">
             <p className="text-sm text-muted-foreground mb-2">Profit Margin</p>
             <div className="flex items-center justify-center gap-2">
-              <span
-                className={`text-5xl font-bold ${
-                  Number(profitMargin) >= 0 ? "text-gradient-primary" : "text-destructive"
-                }`}
-              >
-                {profitMargin}%
-              </span>
+              <span className="text-5xl font-bold text-muted-foreground">—</span>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              Net Profit / Revenue × 100
-            </p>
+            <p className="text-sm text-muted-foreground mt-2">Net Profit / Revenue × 100</p>
             
             {/* Visual Progress Bar */}
             <div className="mt-4 h-3 bg-muted rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(Math.max(Number(profitMargin), 0), 100)}%` }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-              />
+              <div className="h-full w-0 bg-gradient-to-r from-primary to-secondary rounded-full" />
             </div>
           </div>
         </motion.div>
@@ -219,39 +188,25 @@ const ProfitLoss = () => {
               <tbody>
                 <tr className="border-b border-border/50">
                   <td className="py-3 text-foreground font-medium">Total Revenue</td>
-                  <td className="py-3 text-right font-mono text-success">
-                    + ${revenue.toLocaleString()}
-                  </td>
+                  <td className="py-3 text-right font-mono text-success">—</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-3 text-foreground font-medium">Total Expenses</td>
-                  <td className="py-3 text-right font-mono text-destructive">
-                    - ${expenses.toLocaleString()}
-                  </td>
+                  <td className="py-3 text-right font-mono text-destructive">—</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-3 text-foreground font-medium">Gross Profit</td>
-                  <td className="py-3 text-right font-mono text-foreground">
-                    ${grossProfit.toLocaleString()}
-                  </td>
+                  <td className="py-3 text-right font-mono text-foreground">—</td>
                 </tr>
                 <tr className="border-b border-border/50">
-                  <td className="py-3 text-foreground font-medium">Tax ({taxRate}%)</td>
-                  <td className="py-3 text-right font-mono text-warning">
-                    - ${taxAmount.toLocaleString()}
-                  </td>
+                  <td className="py-3 text-foreground font-medium">Tax</td>
+                  <td className="py-3 text-right font-mono text-warning">—</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr className="font-bold">
                   <td className="py-3 text-primary text-lg">Net Profit</td>
-                  <td
-                    className={`py-3 text-right font-mono text-lg ${
-                      netProfit >= 0 ? "text-success" : "text-destructive"
-                    }`}
-                  >
-                    ${netProfit.toLocaleString()}
-                  </td>
+                  <td className="py-3 text-right font-mono text-lg text-foreground">—</td>
                 </tr>
               </tfoot>
             </table>

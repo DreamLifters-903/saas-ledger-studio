@@ -1,26 +1,10 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Calendar, Edit2, Trash2, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { motion } from "framer-motion";
+import { Plus, Calendar, ArrowUpRight, ArrowDownLeft, FileText } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-interface Transaction {
-  id: number;
-  date: string;
-  particulars: string;
-  type: "debit" | "credit";
-  amount: number;
-}
-
-const sampleTransactions: Transaction[] = [
-  { id: 1, date: "2024-12-20", particulars: "Office Supplies", type: "debit", amount: 450 },
-  { id: 2, date: "2024-12-19", particulars: "Client Payment - ABC Corp", type: "credit", amount: 5200 },
-  { id: 3, date: "2024-12-18", particulars: "Utility Bills", type: "debit", amount: 890 },
-  { id: 4, date: "2024-12-17", particulars: "Consulting Fee", type: "credit", amount: 3400 },
-  { id: 5, date: "2024-12-16", particulars: "Software Subscription", type: "debit", amount: 299 },
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,7 +20,6 @@ const itemVariants = {
 };
 
 const AddTransaction = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>(sampleTransactions);
   const [transactionType, setTransactionType] = useState<"debit" | "credit">("debit");
 
   return (
@@ -128,60 +111,19 @@ const AddTransaction = () => {
           </div>
         </motion.div>
 
-        {/* Transactions List */}
+        {/* Transactions List - Empty State */}
         <motion.div variants={itemVariants}>
           <h2 className="text-lg font-semibold text-foreground mb-4">Recent Transactions</h2>
-          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-            <AnimatePresence mode="popLayout">
-              {transactions.map((transaction, index) => (
-                <motion.div
-                  key={transaction.id}
-                  layout
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="dashboard-card p-4 flex items-center justify-between group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        transaction.type === "debit"
-                          ? "bg-destructive/20 text-destructive"
-                          : "bg-success/20 text-success"
-                      }`}
-                    >
-                      {transaction.type === "debit" ? (
-                        <ArrowUpRight className="w-5 h-5" />
-                      ) : (
-                        <ArrowDownLeft className="w-5 h-5" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">{transaction.particulars}</p>
-                      <p className="text-sm text-muted-foreground">{transaction.date}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span
-                      className={`text-lg font-semibold ${
-                        transaction.type === "debit" ? "text-destructive" : "text-success"
-                      }`}
-                    >
-                      {transaction.type === "debit" ? "-" : "+"}${transaction.amount.toLocaleString()}
-                    </span>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="icon" className="w-8 h-8">
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="w-8 h-8 text-destructive hover:text-destructive">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+          <div className="glow-card">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+                <FileText className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">No transactions yet</h3>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Start by adding your first transaction using the form above.
+              </p>
+            </div>
           </div>
         </motion.div>
       </motion.div>
