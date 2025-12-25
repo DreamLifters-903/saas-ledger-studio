@@ -1,31 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Calendar, Filter, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Search, Calendar, Filter, BookOpen } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-interface JournalEntry {
-  id: number;
-  date: string;
-  particulars: string;
-  type: "debit" | "credit";
-  debit: number | null;
-  credit: number | null;
-}
-
-const sampleJournalEntries: JournalEntry[] = [
-  { id: 1, date: "2024-12-20", particulars: "Office Supplies Purchased", type: "debit", debit: 450, credit: null },
-  { id: 2, date: "2024-12-20", particulars: "Cash Account", type: "credit", debit: null, credit: 450 },
-  { id: 3, date: "2024-12-19", particulars: "Bank Account", type: "debit", debit: 5200, credit: null },
-  { id: 4, date: "2024-12-19", particulars: "Sales Revenue - ABC Corp", type: "credit", debit: null, credit: 5200 },
-  { id: 5, date: "2024-12-18", particulars: "Utility Expense", type: "debit", debit: 890, credit: null },
-  { id: 6, date: "2024-12-18", particulars: "Bank Account", type: "credit", debit: null, credit: 890 },
-  { id: 7, date: "2024-12-17", particulars: "Cash Account", type: "debit", debit: 3400, credit: null },
-  { id: 8, date: "2024-12-17", particulars: "Consulting Revenue", type: "credit", debit: null, credit: 3400 },
-  { id: 9, date: "2024-12-16", particulars: "Software Expense", type: "debit", debit: 299, credit: null },
-  { id: 10, date: "2024-12-16", particulars: "Cash Account", type: "credit", debit: null, credit: 299 },
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -42,14 +20,6 @@ const itemVariants = {
 
 const JournalBook = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [entries] = useState<JournalEntry[]>(sampleJournalEntries);
-
-  const filteredEntries = entries.filter((entry) =>
-    entry.particulars.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalDebit = filteredEntries.reduce((sum, e) => sum + (e.debit || 0), 0);
-  const totalCredit = filteredEntries.reduce((sum, e) => sum + (e.credit || 0), 0);
 
   return (
     <MainLayout>
@@ -88,7 +58,7 @@ const JournalBook = () => {
           </div>
         </motion.div>
 
-        {/* Table */}
+        {/* Table - Empty State */}
         <motion.div variants={itemVariants} className="glow-card p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="data-table">
@@ -102,45 +72,25 @@ const JournalBook = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredEntries.map((entry, index) => (
-                  <motion.tr
-                    key={entry.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                  >
-                    <td className="text-muted-foreground">{entry.date}</td>
-                    <td className="font-medium text-foreground">{entry.particulars}</td>
-                    <td>
-                      <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                          entry.type === "debit"
-                            ? "bg-destructive/20 text-destructive"
-                            : "bg-success/20 text-success"
-                        }`}
-                      >
-                        {entry.type === "debit" ? (
-                          <ArrowUpRight className="w-3 h-3" />
-                        ) : (
-                          <ArrowDownLeft className="w-3 h-3" />
-                        )}
-                        {entry.type}
-                      </span>
-                    </td>
-                    <td className="text-right font-mono">
-                      {entry.debit ? `$${entry.debit.toLocaleString()}` : "-"}
-                    </td>
-                    <td className="text-right font-mono">
-                      {entry.credit ? `$${entry.credit.toLocaleString()}` : "-"}
-                    </td>
-                  </motion.tr>
-                ))}
+                <tr>
+                  <td colSpan={5}>
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+                        <BookOpen className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="font-semibold text-foreground mb-2">No journal entries</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Journal entries will appear here once transactions are recorded.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
               <tfoot>
                 <tr className="bg-primary/10 font-semibold">
                   <td colSpan={3} className="text-right text-primary">Total</td>
-                  <td className="text-right font-mono text-primary">${totalDebit.toLocaleString()}</td>
-                  <td className="text-right font-mono text-primary">${totalCredit.toLocaleString()}</td>
+                  <td className="text-right font-mono text-primary">—</td>
+                  <td className="text-right font-mono text-primary">—</td>
                 </tr>
               </tfoot>
             </table>
@@ -151,15 +101,15 @@ const JournalBook = () => {
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="dashboard-card">
             <p className="text-sm text-muted-foreground mb-1">Total Entries</p>
-            <p className="text-2xl font-bold text-foreground">{filteredEntries.length}</p>
+            <p className="text-2xl font-bold text-foreground">0</p>
           </div>
           <div className="dashboard-card">
             <p className="text-sm text-muted-foreground mb-1">Total Debit</p>
-            <p className="text-2xl font-bold text-destructive">${totalDebit.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-destructive">—</p>
           </div>
           <div className="dashboard-card">
             <p className="text-sm text-muted-foreground mb-1">Total Credit</p>
-            <p className="text-2xl font-bold text-success">${totalCredit.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-success">—</p>
           </div>
         </motion.div>
       </motion.div>

@@ -1,48 +1,26 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { UserCheck, UserX, Clock, Save } from "lucide-react";
+import { UserCheck, UserX, Clock, Save, Users } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-interface AttendanceRecord {
-  id: number;
-  employeeId: string;
-  employeeName: string;
-  status: "present" | "absent" | "parttime";
-  time?: string;
-}
-
-const sampleAttendance: AttendanceRecord[] = [
-  { id: 1, employeeId: "EMP001", employeeName: "John Smith", status: "present" },
-  { id: 2, employeeId: "EMP002", employeeName: "Sarah Johnson", status: "present" },
-  { id: 3, employeeId: "EMP003", employeeName: "Michael Brown", status: "absent" },
-  { id: 4, employeeId: "EMP004", employeeName: "Emily Davis", status: "parttime", time: "4 hours" },
-  { id: 5, employeeId: "EMP005", employeeName: "David Wilson", status: "present" },
-  { id: 6, employeeId: "EMP006", employeeName: "Lisa Anderson", status: "parttime", time: "6 hours" },
-  { id: 7, employeeId: "EMP007", employeeName: "James Taylor", status: "present" },
-  { id: 8, employeeId: "EMP008", employeeName: "Jennifer Martinez", status: "absent" },
-];
-
 const statusConfig = {
   present: {
     label: "Present",
     icon: UserCheck,
-    color: "bg-success/20 text-success border-success/30",
     buttonActive: "bg-success text-success-foreground",
   },
   absent: {
     label: "Absent",
     icon: UserX,
-    color: "bg-destructive/20 text-destructive border-destructive/30",
     buttonActive: "bg-destructive text-destructive-foreground",
   },
   parttime: {
     label: "Part Time",
     icon: Clock,
-    color: "bg-warning/20 text-warning border-warning/30",
     buttonActive: "bg-warning text-warning-foreground",
   },
 };
@@ -62,7 +40,6 @@ const itemVariants = {
 
 const Attendance = () => {
   const [selectedStatus, setSelectedStatus] = useState<"present" | "absent" | "parttime">("present");
-  const [attendance] = useState<AttendanceRecord[]>(sampleAttendance);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -70,10 +47,6 @@ const Attendance = () => {
     month: "long",
     day: "numeric",
   });
-
-  const presentCount = attendance.filter((a) => a.status === "present").length;
-  const absentCount = attendance.filter((a) => a.status === "absent").length;
-  const parttimeCount = attendance.filter((a) => a.status === "parttime").length;
 
   return (
     <MainLayout>
@@ -92,15 +65,15 @@ const Attendance = () => {
           <div className="flex gap-3">
             <div className="dashboard-card px-4 py-2 flex items-center gap-2">
               <UserCheck className="w-4 h-4 text-success" />
-              <span className="text-sm font-medium">{presentCount} Present</span>
+              <span className="text-sm font-medium">0 Present</span>
             </div>
             <div className="dashboard-card px-4 py-2 flex items-center gap-2">
               <UserX className="w-4 h-4 text-destructive" />
-              <span className="text-sm font-medium">{absentCount} Absent</span>
+              <span className="text-sm font-medium">0 Absent</span>
             </div>
             <div className="dashboard-card px-4 py-2 flex items-center gap-2">
               <Clock className="w-4 h-4 text-warning" />
-              <span className="text-sm font-medium">{parttimeCount} Part Time</span>
+              <span className="text-sm font-medium">0 Part Time</span>
             </div>
           </div>
         </motion.div>
@@ -169,7 +142,7 @@ const Attendance = () => {
           </div>
         </motion.div>
 
-        {/* Attendance Table */}
+        {/* Attendance Table - Empty State */}
         <motion.div variants={itemVariants}>
           <h2 className="text-lg font-semibold text-foreground mb-4">Today's Attendance</h2>
           <div className="glow-card p-0 overflow-hidden">
@@ -184,35 +157,19 @@ const Attendance = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {attendance.map((record, index) => {
-                    const config = statusConfig[record.status];
-                    const Icon = config.icon;
-                    return (
-                      <motion.tr
-                        key={record.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                      >
-                        <td className="font-mono text-muted-foreground">{record.employeeId}</td>
-                        <td className="font-medium text-foreground">{record.employeeName}</td>
-                        <td>
-                          <span
-                            className={cn(
-                              "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border",
-                              config.color
-                            )}
-                          >
-                            <Icon className="w-3.5 h-3.5" />
-                            {config.label}
-                          </span>
-                        </td>
-                        <td className="text-muted-foreground">
-                          {record.time || (record.status === "present" ? "Full Day" : "-")}
-                        </td>
-                      </motion.tr>
-                    );
-                  })}
+                  <tr>
+                    <td colSpan={4}>
+                      <div className="flex flex-col items-center justify-center py-12 text-center">
+                        <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+                          <Users className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                        <h3 className="font-semibold text-foreground mb-2">No attendance records</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Start marking attendance using the form above.
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

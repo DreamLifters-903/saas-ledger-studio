@@ -11,16 +11,7 @@ interface LedgerAccount {
   type: "asset" | "liability" | "equity" | "revenue" | "expense";
 }
 
-interface LedgerEntry {
-  id: number;
-  date: string;
-  particulars: string;
-  debit: number | null;
-  credit: number | null;
-  balance: number;
-}
-
-const sampleLedgerAccounts: LedgerAccount[] = [
+const ledgerAccounts: LedgerAccount[] = [
   { id: 1, name: "Cash Account", type: "asset" },
   { id: 2, name: "Bank Account", type: "asset" },
   { id: 3, name: "Accounts Receivable", type: "asset" },
@@ -31,15 +22,6 @@ const sampleLedgerAccounts: LedgerAccount[] = [
   { id: 8, name: "Utility Expense", type: "expense" },
   { id: 9, name: "Software Expense", type: "expense" },
   { id: 10, name: "Owner's Equity", type: "equity" },
-];
-
-const sampleLedgerEntries: LedgerEntry[] = [
-  { id: 1, date: "2024-12-15", particulars: "Opening Balance", debit: 50000, credit: null, balance: 50000 },
-  { id: 2, date: "2024-12-16", particulars: "Software Purchase", debit: null, credit: 299, balance: 49701 },
-  { id: 3, date: "2024-12-17", particulars: "Consulting Fee Received", debit: 3400, credit: null, balance: 53101 },
-  { id: 4, date: "2024-12-18", particulars: "Utility Bills Payment", debit: null, credit: 890, balance: 52211 },
-  { id: 5, date: "2024-12-19", particulars: "Client Payment - ABC Corp", debit: 5200, credit: null, balance: 57411 },
-  { id: 6, date: "2024-12-20", particulars: "Office Supplies", debit: null, credit: 450, balance: 56961 },
 ];
 
 const accountTypeColors = {
@@ -64,10 +46,10 @@ const itemVariants = {
 };
 
 const LedgerAccounts = () => {
-  const [selectedAccount, setSelectedAccount] = useState<LedgerAccount>(sampleLedgerAccounts[0]);
+  const [selectedAccount, setSelectedAccount] = useState<LedgerAccount>(ledgerAccounts[0]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredAccounts = sampleLedgerAccounts.filter((account) =>
+  const filteredAccounts = ledgerAccounts.filter((account) =>
     account.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -153,9 +135,7 @@ const LedgerAccounts = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-muted-foreground">Current Balance</p>
-                  <p className="text-2xl font-bold text-primary">
-                    ${sampleLedgerEntries[sampleLedgerEntries.length - 1].balance.toLocaleString()}
-                  </p>
+                  <p className="text-2xl font-bold text-primary">—</p>
                 </div>
               </div>
             </div>
@@ -173,26 +153,19 @@ const LedgerAccounts = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sampleLedgerEntries.map((entry, index) => (
-                      <motion.tr
-                        key={entry.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                      >
-                        <td className="text-muted-foreground">{entry.date}</td>
-                        <td className="font-medium text-foreground">{entry.particulars}</td>
-                        <td className="text-right font-mono text-destructive">
-                          {entry.debit ? `$${entry.debit.toLocaleString()}` : "-"}
-                        </td>
-                        <td className="text-right font-mono text-success">
-                          {entry.credit ? `$${entry.credit.toLocaleString()}` : "-"}
-                        </td>
-                        <td className="text-right font-mono font-semibold text-foreground">
-                          ${entry.balance.toLocaleString()}
-                        </td>
-                      </motion.tr>
-                    ))}
+                    <tr>
+                      <td colSpan={5}>
+                        <div className="flex flex-col items-center justify-center py-12 text-center">
+                          <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+                            <BookOpen className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                          <h3 className="font-semibold text-foreground mb-2">No entries</h3>
+                          <p className="text-sm text-muted-foreground">
+                            No transactions recorded for this account yet.
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

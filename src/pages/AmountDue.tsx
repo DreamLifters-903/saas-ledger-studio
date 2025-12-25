@@ -1,26 +1,6 @@
 import { motion } from "framer-motion";
-import { Clock, DollarSign, AlertTriangle } from "lucide-react";
+import { Clock, DollarSign, AlertTriangle, FileText } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
-
-interface AmountDueRecord {
-  id: number;
-  serialNo: number;
-  date: string;
-  retailerName: string;
-  amount: number;
-  daysOverdue?: number;
-}
-
-const sampleAmountDue: AmountDueRecord[] = [
-  { id: 1, serialNo: 1, date: "2024-12-01", retailerName: "ABC Electronics", amount: 12500, daysOverdue: 24 },
-  { id: 2, serialNo: 2, date: "2024-12-05", retailerName: "XYZ Supplies Co.", amount: 8750, daysOverdue: 20 },
-  { id: 3, serialNo: 3, date: "2024-12-10", retailerName: "Global Tech Ltd.", amount: 23400, daysOverdue: 15 },
-  { id: 4, serialNo: 4, date: "2024-12-12", retailerName: "Metro Retailers", amount: 5600 },
-  { id: 5, serialNo: 5, date: "2024-12-15", retailerName: "City Distributors", amount: 18900 },
-  { id: 6, serialNo: 6, date: "2024-12-18", retailerName: "Prime Wholesale", amount: 7200 },
-  { id: 7, serialNo: 7, date: "2024-12-20", retailerName: "Eastern Trading", amount: 15800 },
-  { id: 8, serialNo: 8, date: "2024-12-22", retailerName: "Southern Goods Inc.", amount: 9300 },
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,12 +16,6 @@ const itemVariants = {
 };
 
 const AmountDue = () => {
-  const totalAmount = sampleAmountDue.reduce((sum, r) => sum + r.amount, 0);
-  const overdueAmount = sampleAmountDue
-    .filter((r) => r.daysOverdue)
-    .reduce((sum, r) => sum + r.amount, 0);
-  const overdueCount = sampleAmountDue.filter((r) => r.daysOverdue).length;
-
   return (
     <MainLayout>
       <motion.div
@@ -65,7 +39,7 @@ const AmountDue = () => {
               </div>
               <span className="text-sm text-muted-foreground">Total Outstanding</span>
             </div>
-            <p className="text-2xl font-bold text-foreground">${totalAmount.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-foreground">—</p>
           </div>
           <div className="glow-card p-5">
             <div className="flex items-center gap-3 mb-3">
@@ -74,7 +48,7 @@ const AmountDue = () => {
               </div>
               <span className="text-sm text-muted-foreground">Overdue Amount</span>
             </div>
-            <p className="text-2xl font-bold text-warning">${overdueAmount.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-warning">—</p>
           </div>
           <div className="glow-card p-5">
             <div className="flex items-center gap-3 mb-3">
@@ -83,11 +57,11 @@ const AmountDue = () => {
               </div>
               <span className="text-sm text-muted-foreground">Overdue Accounts</span>
             </div>
-            <p className="text-2xl font-bold text-destructive">{overdueCount}</p>
+            <p className="text-2xl font-bold text-destructive">0</p>
           </div>
         </motion.div>
 
-        {/* Table */}
+        {/* Table - Empty State */}
         <motion.div variants={itemVariants} className="glow-card p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="data-table">
@@ -101,38 +75,24 @@ const AmountDue = () => {
                 </tr>
               </thead>
               <tbody>
-                {sampleAmountDue.map((record, index) => (
-                  <motion.tr
-                    key={record.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                  >
-                    <td className="font-mono text-muted-foreground">{record.serialNo}</td>
-                    <td className="text-muted-foreground">{record.date}</td>
-                    <td className="font-medium text-foreground">{record.retailerName}</td>
-                    <td className="text-right font-mono font-semibold text-foreground">
-                      ${record.amount.toLocaleString()}
-                    </td>
-                    <td className="text-center">
-                      {record.daysOverdue ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-destructive/20 text-destructive border border-destructive/30">
-                          <Clock className="w-3 h-3" />
-                          {record.daysOverdue} days
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                          Pending
-                        </span>
-                      )}
-                    </td>
-                  </motion.tr>
-                ))}
+                <tr>
+                  <td colSpan={5}>
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+                        <FileText className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="font-semibold text-foreground mb-2">No outstanding amounts</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Outstanding payments will appear here.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
               <tfoot>
                 <tr className="bg-primary/10 font-semibold">
                   <td colSpan={3} className="text-right text-primary">Total Amount Due</td>
-                  <td className="text-right font-mono text-primary">${totalAmount.toLocaleString()}</td>
+                  <td className="text-right font-mono text-primary">—</td>
                   <td></td>
                 </tr>
               </tfoot>
