@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -74,6 +74,7 @@ export default function Billing() {
   const [quantity, setQuantity] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const quantityInputRef = useRef<HTMLInputElement>(null);
 
   const totalAmount = billItems.reduce((sum, item) => sum + item.amount, 0);
 
@@ -181,6 +182,7 @@ export default function Billing() {
                               onSelect={() => {
                                 setSelectedItem(item);
                                 setOpen(false);
+                                setTimeout(() => quantityInputRef.current?.focus(), 0);
                               }}
                               className="flex items-center justify-between cursor-pointer"
                             >
@@ -199,6 +201,7 @@ export default function Billing() {
               <div className="w-full sm:w-32">
                 <Label className="text-sm text-muted-foreground mb-2 block">Quantity</Label>
                 <Input
+                  ref={quantityInputRef}
                   type="number"
                   min="1"
                   placeholder="Qty"
