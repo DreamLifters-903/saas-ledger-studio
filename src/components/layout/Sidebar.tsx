@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
+  Receipt,
   Plus,
   BookOpen,
   BookMarked,
@@ -24,6 +25,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Dashboard", path: "/", icon: LayoutDashboard },
+  { label: "Billing", path: "/billing", icon: Receipt },
   { label: "Add Transaction", path: "/add-transaction", icon: Plus },
   { label: "Journal Book", path: "/journal", icon: BookOpen },
   { label: "Ledger Accounts", path: "/ledger", icon: BookMarked },
