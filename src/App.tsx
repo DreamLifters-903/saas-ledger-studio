@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import Billing from "./pages/Billing";
 import AddTransaction from "./pages/AddTransaction";
 import JournalBook from "./pages/JournalBook";
 import LedgerAccounts from "./pages/LedgerAccounts";
@@ -24,6 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/billing" element={<Billing />} />
           <Route path="/add-transaction" element={<AddTransaction />} />
           <Route path="/journal" element={<JournalBook />} />
           <Route path="/ledger" element={<LedgerAccounts />} />
